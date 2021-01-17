@@ -25,10 +25,29 @@ function Storage:add(entry)
   return self
 end
 
+function Storage:update_line_notes(line_notes)
+  self.data[vim.fn.expand('%:p')][tostring(vim.fn.line('.'))] = line_notes
+  self:write()
+  return self
+end
+
 function Storage:get(key, default)
+  if not key then return self.data end
   local def = default or {}
-  if not key then return self.data or def end
-  return self.data[key] or def
+  if type(key) == 'string' then return self.data[tostring(key)] or def end
+
+  local result = self.data
+  for _, path in ipairs(key) do
+    result = result[tostring(path)] or {}
+  end
+  if vim.tbl_isempty(result) then return def end
+  return result
+end
+
+function Storage:get_current_line_notes()
+  local current_path = vim.fn.expand('%:p')
+  local line = vim.fn.line('.')
+  return self:get({current_path, line})
 end
 
 function Storage:read()
