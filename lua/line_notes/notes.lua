@@ -79,12 +79,13 @@ function Notes:render()
   local current_path = vim.fn.expand('%:p')
   local buf = vim.api.nvim_get_current_buf()
   local file_notes = self.storage:get(current_path)
+  if vim.b.line_notes_ns then
+    vim.api.nvim_buf_clear_namespace(buf, vim.b.line_notes_ns, vim.fn.line('.') - 1, vim.fn.line('.'))
+  end
   if vim.tbl_isempty(file_notes) then return end
 
   if not vim.b.line_notes_ns then
     vim.b.line_notes_ns = vim.api.nvim_create_namespace(string.format('line_notes_%s', current_path));
-  else
-    vim.api.nvim_buf_clear_namespace(buf, vim.b.line_notes_ns, vim.fn.line('.'), vim.fn.line('.'))
   end
   for line, notes_by_line in pairs(file_notes) do
     local c = #notes_by_line > 1 and #notes_by_line or ''
