@@ -1,9 +1,10 @@
 local Storage = {}
 
 function Storage:new(opts)
-  local obj = opts or {}
-  obj.path = obj.path or vim.fn.fnamemodify('~/line-notes.json', ':p')
-  obj.data = obj.data or {}
+  local obj = {}
+  obj.opts = opts or {}
+  obj.opts.path = obj.opts.path or vim.fn.fnamemodify('~/.local/share/line-notes.json', ':p')
+  obj.data = {}
 
   setmetatable(obj, self)
   self.__index = self
@@ -51,7 +52,7 @@ function Storage:get_current_line_notes()
 end
 
 function Storage:read()
-  local has_file, fd = pcall(vim.loop.fs_open, vim.fn.expand(self.path, true), "r", 438)
+  local has_file, fd = pcall(vim.loop.fs_open, vim.fn.expand(self.opts.path, true), "r", 438)
   if has_file and fd then
     local stat = assert(vim.loop.fs_fstat(fd))
     self.data = assert(vim.loop.fs_read(fd, stat.size, 0))
@@ -63,7 +64,7 @@ end
 
 function Storage:write()
   -- TODO: Use fs_write
-  return vim.fn.writefile({vim.fn.json_encode(self.data)}, self.path)
+  return vim.fn.writefile({vim.fn.json_encode(self.data)}, self.opts.path)
 end
 
 return Storage

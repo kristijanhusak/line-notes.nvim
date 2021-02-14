@@ -2,7 +2,9 @@ local Storage = require'line_notes/storage'
 local Notes = {}
 
 function Notes:new(opts)
-  local obj = opts or {}
+  local obj = {}
+  obj.opts = opts or {}
+  obj.opts.icon = obj.opts.icon or ''
   setmetatable(obj, self)
   self.__index = self
   self.storage = Storage:new(opts):read()
@@ -57,6 +59,15 @@ function Notes:delete()
   if vim.tbl_isempty(line_notes) then
     return print('No notes available for this line.')
   end
+
+  if #line_notes == 1 then
+    local choice = vim.fn.confirm(string.format('Delete note %s', line_notes[1].note), '&Yes\n&No\n&Cancel')
+    if choice < 1 then return print('Wrong selection.') end
+    if choice > 1 then return end
+    self.storage:update_line_notes(nil)
+    return self:render()
+  end
+
   local opts = {}
   for idx, item in ipairs(line_notes) do
     table.insert(opts, string.format('%d) %s', idx, item.note))
@@ -89,7 +100,7 @@ function Notes:render()
   end
   for line, notes_by_line in pairs(file_notes) do
     local c = #notes_by_line > 1 and #notes_by_line or ''
-    vim.api.nvim_buf_set_virtual_text(buf, vim.b.line_notes_ns, tonumber(line) - 1, {{'    '..c, 'Comment'}}, {})
+    vim.api.nvim_buf_set_virtual_text(buf, vim.b.line_notes_ns, tonumber(line) - 1, {{string.format('  %s  ', self.opts.icon)..c, 'Comment'}}, {})
   end
   return self
 end

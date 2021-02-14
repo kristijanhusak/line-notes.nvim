@@ -4,6 +4,7 @@ local instance = nil
 local function setup(opts)
   if instance ~= nil then return instance end
   instance = Notes:new(opts)
+  return instance
 end
 
 local render = vim.schedule_wrap(function()
