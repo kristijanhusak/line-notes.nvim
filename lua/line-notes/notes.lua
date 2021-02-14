@@ -1,4 +1,4 @@
-local Storage = require'line_notes/storage'
+local Storage = require'line-notes/storage'
 local Notes = {}
 
 function Notes:new(opts)
@@ -10,13 +10,13 @@ function Notes:new(opts)
   self.storage = Storage:new(opts):read()
   vim.cmd[[augroup line_notes]]
   vim.cmd[[autocmd!]]
-  vim.cmd[[autocmd BufEnter * lua require'line_notes'.render()]]
+  vim.cmd[[autocmd BufEnter * lua require'line-notes'.render()]]
   vim.cmd[[augroup END]]
 
-  vim.cmd[[command! AddLineNote lua require'line_notes'.add()]]
-  vim.cmd[[command! EditLineNote lua require'line_notes'.edit()]]
-  vim.cmd[[command! PreviewLineNotes lua require'line_notes'.preview()]]
-  vim.cmd[[command! DeleteLineNotes lua require'line_notes'.delete()]]
+  vim.cmd[[command! AddLineNote lua require'line-notes'.add()]]
+  vim.cmd[[command! EditLineNote lua require'line-notes'.edit()]]
+  vim.cmd[[command! PreviewLineNotes lua require'line-notes'.preview()]]
+  vim.cmd[[command! DeleteLineNotes lua require'line-notes'.delete()]]
   return obj
 end
 
@@ -37,6 +37,17 @@ function Notes:edit()
   if vim.tbl_isempty(line_notes) then
     return print('No notes available for this line.')
   end
+
+  if #line_notes == 1 then
+    local new_note = vim.fn.input('Edit note: ', line_notes[1].note)
+    if not new_note or new_note == '' then
+      return print('Empty note.')
+    end
+    line_notes[1].note = new_note
+    self.storage:update_line_notes(line_notes)
+    return self:render()
+  end
+
   local opts = {}
   for idx, item in ipairs(line_notes) do
     table.insert(opts, string.format('%d) %s', idx, item.note))

@@ -1,4 +1,4 @@
-local Notes = require'line_notes/notes'
+local Notes = require'line-notes/notes'
 local instance = nil
 
 local function setup(opts)
