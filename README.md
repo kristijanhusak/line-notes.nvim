@@ -4,6 +4,8 @@ Leave personal comments and notes in your files that are visible only to you. Ne
 
 Still in very alpha stage. Breaking changes to be expected.
 
+![line-notes](https://user-images.githubusercontent.com/1782860/107889483-3178e380-6f13-11eb-9095-f115756f7b38.gif)
+
 ## Installation
 ```vim
 " vim-packager
@@ -25,7 +27,7 @@ Plug 'kristijanhusak/line-notes.nvim'
 ```
 
 ```vim
-" These are the default values
+" These are the default options
 lua require'line-notes'.setup({
 	path = vim.fn.fnamemodify('~/.local/share/line-notes.json'),
 	icon = ''
