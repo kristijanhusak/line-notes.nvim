@@ -29,7 +29,10 @@ Plug 'kristijanhusak/line-notes.nvim'
 ```vim
 " These are the default options
 lua require'line-notes'.setup({
-	path = vim.fn.fnamemodify('~/.local/share/line-notes.json', ':p'),
+	path = vim.fn.fnamemodify('~/.local/share/line-notes.json', ':p'), -- path where to save the file
+	border_chars = { top_left = '╭', top_mid = '─', top_right = '╮', mid = '│', bottom_left = '╰', bottom_right= '╯' },
+	preview_max_width = 80, -- maximum width of preview notes float window
+	auto_preview = false -- automatically open preview notes float window
 	icon = ''
 })
 ```
@@ -47,6 +50,6 @@ Or if you use [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 TODO:
 * [ ] Add option to leave comment per line and column
 * [ ] Add option to show bubble icon in floating window and sign (currently available only as virtual text)
-* [ ] Improve preview window (borders, positioning)
+* [x] Improve preview window (borders, positioning)
 * [x] Add finder for notes (Telescope)
 * [ ] Add ability to set up mappings

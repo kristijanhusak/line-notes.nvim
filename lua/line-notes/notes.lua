@@ -1,16 +1,26 @@
 local Storage = require'line-notes/storage'
+local Popup = require'line-notes/popup'
 local Notes = {}
+local borders = {
+  top_left = '╭', top_mid = '─', top_right = '╮', mid = '│', bottom_left = '╰', bottom_right= '╯',
+}
 
 function Notes:new(opts)
   local obj = {}
   obj.opts = opts or {}
   obj.opts.icon = obj.opts.icon or ''
+  obj.opts.border_chars = obj.opts.border_chars or borders
+  obj.opts.preview_max_width = obj.opts.preview_max_width or 80
+  obj.opts.auto_preview = obj.opts.auto_preview or false
   setmetatable(obj, self)
   self.__index = self
   self.storage = Storage:new(opts):read()
   vim.cmd[[augroup line_notes]]
   vim.cmd[[autocmd!]]
   vim.cmd[[autocmd BufEnter * lua require'line-notes'.render()]]
+  if obj.opts.auto_preview then
+    vim.cmd[[autocmd CursorHold * lua require'line-notes'.preview()]]
+  end
   vim.cmd[[augroup END]]
 
   vim.cmd[[command! LineNotesAdd lua require'line-notes'.add()]]
@@ -117,6 +127,10 @@ function Notes:render()
     local c = #notes_by_line > 1 and #notes_by_line or ''
     vim.api.nvim_buf_set_virtual_text(buf, vim.b.line_notes_ns, tonumber(line) - 1, {{string.format('  %s  ', self.opts.icon)..c, 'Comment'}}, {})
   end
+  if Popup.is_opened() then
+    Popup.close()
+    self:preview()
+  end
   return self
 end
 
@@ -126,13 +140,9 @@ function Notes:preview()
 
   local float_content = {}
   for idx, item in ipairs(line_notes) do
-    table.insert(float_content, string.format('%d) %s', idx, item.note))
+    table.insert(float_content, string.format('%d. %s', idx, item.note))
   end
-  local line_len = #vim.fn.getline('.')
-  vim.lsp.util.open_floating_preview(float_content, 'markdown', {
-    offset_x = math.max(line_len + 7, 80) - vim.fn.col('.'),
-    offset_y = -1
-  })
+  Popup.create(float_content, self.opts)
 end
 
 function Notes:get_all(opts)
