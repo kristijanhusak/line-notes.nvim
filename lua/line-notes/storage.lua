@@ -3,7 +3,7 @@ local Storage = {}
 function Storage:new(opts)
   local obj = {}
   obj.opts = opts or {}
-  obj.opts.path = obj.opts.path or vim.fn.fnamemodify('~/.local/share/line-notes.json', ':p')
+  obj.opts.path = obj.opts.path or vim.fn.stdpath('data')..'/line-notes.json'
   obj.data = {}
 
   setmetatable(obj, self)
