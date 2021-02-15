@@ -13,10 +13,11 @@ function Notes:new(opts)
   vim.cmd[[autocmd BufEnter * lua require'line-notes'.render()]]
   vim.cmd[[augroup END]]
 
-  vim.cmd[[command! AddLineNote lua require'line-notes'.add()]]
-  vim.cmd[[command! EditLineNote lua require'line-notes'.edit()]]
-  vim.cmd[[command! PreviewLineNotes lua require'line-notes'.preview()]]
-  vim.cmd[[command! DeleteLineNotes lua require'line-notes'.delete()]]
+  vim.cmd[[command! LineNotesAdd lua require'line-notes'.add()]]
+  vim.cmd[[command! LineNotesEdit lua require'line-notes'.edit()]]
+  vim.cmd[[command! LineNotesPreview lua require'line-notes'.preview()]]
+  vim.cmd[[command! LineNotesDelete lua require'line-notes'.delete()]]
+  vim.cmd[[command! LineNotesRedraw lua require'line-notes'.render()]]
   return obj
 end
 

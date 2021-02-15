@@ -35,10 +35,10 @@ lua require'line-notes'.setup({
 ```
 
 Use commands:
-* `AddLineNote`
-* `EditLineNote`
-* `PreviewLineNotes`
-* `DeleteLineNotes`
+* `LineNotesAdd`
+* `LineNotesEdit`
+* `LineNotesPreview`
+* `LineNotesDelete`
 
 Or if you use [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim):
 * `Telescope line_notes` - All line notes
