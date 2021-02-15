@@ -40,9 +40,13 @@ Use commands:
 * `PreviewLineNotes`
 * `DeleteLineNotes`
 
+Or if you use [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim):
+* `Telescope line_notes` - All line notes
+* `Telescope line_notes_project` - Notes in files that are part of current working directory
+
 TODO:
 * [ ] Add option to leave comment per line and column
 * [ ] Add option to show bubble icon in floating window and sign (currently available only as virtual text)
 * [ ] Improve preview window (borders, positioning)
-* [ ] Add finder for notes (Telescope, fzf)
+* [x] Add finder for notes (Telescope)
 * [ ] Add ability to set up mappings

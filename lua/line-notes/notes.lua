@@ -28,6 +28,7 @@ function Notes:add()
     line = vim.fn.line('.'),
     col = vim.fn.col('.'),
     note = note,
+    created_at = os.time(os.date("!*t")),
   })
   return self:render()
 end
@@ -44,6 +45,7 @@ function Notes:edit()
       return print('Empty note.')
     end
     line_notes[1].note = new_note
+    line_notes[1].updated_at = os.time(os.date("!*t"))
     self.storage:update_line_notes(line_notes)
     return self:render()
   end
@@ -61,6 +63,7 @@ function Notes:edit()
     return print('Empty note.')
   end
   line_notes[selected].note = new_note
+  line_notes[selected].updated_at = os.time(os.date("!*t"))
   self.storage:update_line_notes(line_notes)
   return self:render()
 end
@@ -129,6 +132,26 @@ function Notes:preview()
     offset_x = math.max(line_len + 7, 80) - vim.fn.col('.'),
     offset_y = -1
   })
+end
+
+function Notes:get_all(opts)
+  opts = opts or {}
+  local all = opts.all or false
+  local cwd = vim.fn.getcwd()
+  local data = self.storage:get()
+  local result = {}
+  for filename, lines in pairs(data) do
+    if all or filename:sub(1, #cwd) == cwd then
+      for line, notes in pairs(lines) do
+        table.insert(result, {
+          filename = filename,
+          line = tonumber(line),
+          notes = notes
+        })
+      end
+    end
+  end
+  return result
 end
 
 return Notes

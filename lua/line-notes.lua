@@ -4,6 +4,11 @@ local instance = nil
 local function setup(opts)
   if instance ~= nil then return instance end
   instance = Notes:new(opts)
+  local has_telescope, telescope = pcall(require, 'telescope')
+  if has_telescope then
+    telescope.load_extension('line_notes')
+    telescope.load_extension('line_notes_project')
+  end
   return instance
 end
 
@@ -27,6 +32,10 @@ local function delete()
   return setup():delete()
 end
 
+local function get_list(opts)
+  return setup():get_all(opts)
+end
+
 
 return {
   setup = setup,
@@ -35,4 +44,5 @@ return {
   edit = edit,
   delete = delete,
   preview = preview,
+  get_list = get_list,
 }

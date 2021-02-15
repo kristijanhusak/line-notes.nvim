@@ -21,6 +21,7 @@ function Storage:add(entry)
   table.insert(self.data[entry.path][tostring(entry.line)], {
     col = entry.col,
     note = entry.note,
+    created_at = entry.created_at,
   })
   self:write()
   return self
