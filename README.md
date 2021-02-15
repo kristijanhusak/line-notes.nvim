@@ -29,7 +29,7 @@ Plug 'kristijanhusak/line-notes.nvim'
 ```vim
 " These are the default options
 lua require'line-notes'.setup({
-	path = vim.fn.fnamemodify('~/.local/share/line-notes.json'),
+	path = vim.fn.fnamemodify('~/.local/share/line-notes.json', ':p'),
 	icon = ''
 })
 ```
