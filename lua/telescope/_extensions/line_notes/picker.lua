@@ -24,8 +24,9 @@ local run = function(results)
           preview_command = function(en, bufnr)
             local content = {}
             for i, note in ipairs(en.value.notes) do
-              table.insert(content, string.format('%d) %s', i, note.note))
+              table.insert(content, string.format('%d. %s', i, note.note))
             end
+            vim.api.nvim_buf_set_option(bufnr, 'filetype', 'markdown')
             vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, content)
           end,
         }

@@ -4,7 +4,7 @@ Leave personal comments and notes in your files that are visible only to you. Ne
 
 Still in very alpha stage. Breaking changes to be expected.
 
-![line-notes](https://user-images.githubusercontent.com/1782860/107889483-3178e380-6f13-11eb-9095-f115756f7b38.gif)
+![line-notes-floating](https://user-images.githubusercontent.com/1782860/107988352-16b87480-6fd0-11eb-9d85-b09bb2c8c942.gif)
 
 ## Installation
 ```vim
