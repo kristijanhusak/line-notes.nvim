@@ -33,7 +33,13 @@ lua require'line-notes'.setup({
 	border_chars = { top_left = '╭', top_mid = '─', top_right = '╮', mid = '│', bottom_left = '╰', bottom_right= '╯' },
 	preview_max_width = 80, -- maximum width of preview notes float window
 	auto_preview = false -- automatically open preview notes float window
-	icon = ''
+	icon = '',
+	mappings = {  -- pass in false to disable all. Pass in table to override. Partial overrides are possible
+		add = '<leader>lna', -- pass null to disable the mapping
+		edit = '<leader>lne',
+		preview = '<leader>lnp',
+		delete = '<leader>lnd',
+	}
 })
 ```
 
@@ -52,4 +58,4 @@ TODO:
 * [ ] Add option to show bubble icon in floating window and sign (currently available only as virtual text)
 * [x] Improve preview window (borders, positioning)
 * [x] Add finder for notes (Telescope)
-* [ ] Add ability to set up mappings
+* [x] Add ability to set up mappings

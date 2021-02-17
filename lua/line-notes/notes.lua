@@ -4,6 +4,12 @@ local Notes = {}
 local borders = {
   top_left = '╭', top_mid = '─', top_right = '╮', mid = '│', bottom_left = '╰', bottom_right= '╯',
 }
+local default_mappings = {
+  add = '<leader>lna',
+  edit = '<leader>lne',
+  preview = '<leader>lnp',
+  delete = '<leader>lnd',
+}
 
 function Notes:new(opts)
   local obj = {}
@@ -12,13 +18,20 @@ function Notes:new(opts)
   obj.opts.border_chars = obj.opts.border_chars or borders
   obj.opts.preview_max_width = obj.opts.preview_max_width or 80
   obj.opts.auto_preview = obj.opts.auto_preview or false
+  obj.opts.mappings = obj.opts.mappings ~= nil and obj.opts.mappings or default_mappings
   setmetatable(obj, self)
   self.__index = self
   self.storage = Storage:new(opts):read()
+  obj:setup_autocmds()
+  obj:setup_mappings()
+  return obj
+end
+
+function Notes:setup_autocmds()
   vim.cmd[[augroup line_notes]]
   vim.cmd[[autocmd!]]
   vim.cmd[[autocmd BufEnter * lua require'line-notes'.render()]]
-  if obj.opts.auto_preview then
+  if self.opts.auto_preview then
     vim.cmd[[autocmd CursorHold * lua require'line-notes'.preview()]]
   end
   vim.cmd[[augroup END]]
@@ -28,7 +41,29 @@ function Notes:new(opts)
   vim.cmd[[command! LineNotesPreview lua require'line-notes'.preview()]]
   vim.cmd[[command! LineNotesDelete lua require'line-notes'.delete()]]
   vim.cmd[[command! LineNotesRedraw lua require'line-notes'.render()]]
-  return obj
+end
+
+function Notes:setup_mappings()
+  if self.opts.mappings == false then return end
+  local mappings = vim.deepcopy(default_mappings)
+
+  if type(self.opts.mappings) == 'table' then
+    for action, map in pairs(self.opts.mappings) do
+      if mappings[action] then
+        mappings[action] = map
+      end
+    end
+  end
+
+  for name, mapping in pairs(mappings) do
+    if default_mappings[name] ~= nil and mapping ~= nil then
+      vim.api.nvim_set_keymap('n', mapping, ':LineNotes'..(name:sub(1,1):upper()..name:sub(2))..'<CR>', {
+        nowait = true,
+        silent = true,
+        noremap = true,
+      })
+    end
+  end
 end
 
 function Notes:add()
