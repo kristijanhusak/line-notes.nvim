@@ -41,6 +41,10 @@ function Notes:setup_autocmds()
   vim.cmd[[command! LineNotesPreview lua require'line-notes'.preview()]]
   vim.cmd[[command! LineNotesDelete lua require'line-notes'.delete()]]
   vim.cmd[[command! LineNotesRedraw lua require'line-notes'.render()]]
+  vim.cmd[[nnoremap <Plug>(LineNotesAdd) <cmd>lua require'line-notes'.do_mapping('add', true)<CR>]]
+  vim.cmd[[nnoremap <Plug>(LineNotesEdit) <cmd>lua require'line-notes'.do_mapping('edit', true)<CR>]]
+  vim.cmd[[nnoremap <Plug>(LineNotesDelete) <cmd>lua require'line-notes'.do_mapping('delete', true)<CR>]]
+  vim.cmd[[nnoremap <Plug>(LineNotesPreview) <cmd>lua require'line-notes'.do_mapping('preview', true)<CR>]]
 end
 
 function Notes:setup_mappings()
@@ -57,10 +61,9 @@ function Notes:setup_mappings()
 
   for name, mapping in pairs(mappings) do
     if default_mappings[name] ~= nil and mapping ~= nil then
-      vim.api.nvim_set_keymap('n', mapping, ':LineNotes'..(name:sub(1,1):upper()..name:sub(2))..'<CR>', {
+      vim.api.nvim_set_keymap('n', mapping, '<Plug>(LineNotes'..(name:sub(1,1):upper()..name:sub(2))..')', {
         nowait = true,
-        silent = true,
-        noremap = true,
+        noremap = false,
       })
     end
   end

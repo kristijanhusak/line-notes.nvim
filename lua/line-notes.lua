@@ -1,7 +1,8 @@
 local Notes = require'line-notes/notes'
 local instance = nil
+local M = {}
 
-local function setup(opts)
+M.setup = function(opts)
   if instance ~= nil then return instance end
   instance = Notes:new(opts)
   local has_telescope, telescope = pcall(require, 'telescope')
@@ -12,37 +13,36 @@ local function setup(opts)
   return instance
 end
 
-local render = vim.schedule_wrap(function()
-  return setup():render()
+M.render = vim.schedule_wrap(function()
+  return M.setup():render()
 end)
 
-local preview = vim.schedule_wrap(function()
-  return setup():preview()
+M.preview = vim.schedule_wrap(function()
+  return M.setup():preview()
 end)
 
-local function add()
-  return setup():add()
+M.add = function()
+  return M.setup():add()
 end
 
-local function edit()
-  return setup():edit()
+M.edit = function()
+  return M.setup():edit()
 end
 
-local function delete()
-  return setup():delete()
+M.delete = function()
+  return M.setup():delete()
 end
 
-local function get_list(opts)
-  return setup():get_all(opts)
+M.get_list = function(opts)
+  return M.setup():get_all(opts)
+end
+
+M.do_mapping = function(name, from_mapping)
+  M[name]()
+  if from_mapping then
+    vim.cmd(string.format('silent! call repeat#set("\\<Plug>(LineNotes%s)")', name:sub(1, 1):upper()..name:sub(2)))
+  end
 end
 
 
-return {
-  setup = setup,
-  render = render,
-  add = add,
-  edit = edit,
-  delete = delete,
-  preview = preview,
-  get_list = get_list,
-}
+return M
