@@ -54,10 +54,13 @@ Or if you use [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 * `Telescope line_notes_project` - Notes in files that are part of current working directory
 
 ## Limitations
-Notes are currently tied to the line number in the file. If line content is changed, or the whole line is moved,
-notes stay on the same place. This can cause confusion if notes are left in places that are changed a lot.
+Notes are currently tied to the line number and content in the file. If line content is changed notes stay on the same place, even if moved around.
+This can cause confusion if notes are left in places that are changed a lot.
 Currently there is no easy way to keep track of these changes in a simple way, but if anyone has any idea how to solve that issue,
 please let me know.
+
+If line content is just moved to another line number, line-notes syncs that change and follows the line for the notes. If that's unexpected
+behaviour, open an issue.
 
 TODO:
 * [ ] Add option to leave comment per line and column

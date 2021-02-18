@@ -16,9 +16,12 @@ function Storage:add(entry)
     self.data[entry.path] = {}
   end
   if not self.data[entry.path][tostring(entry.line)] then
-    self.data[entry.path][tostring(entry.line)] = {}
+    self.data[entry.path][tostring(entry.line)] = {
+      line_content = entry.line_content,
+      notes = {},
+    }
   end
-  table.insert(self.data[entry.path][tostring(entry.line)], {
+  table.insert(self.data[entry.path][tostring(entry.line)].notes, {
     col = entry.col,
     note = entry.note,
     created_at = entry.created_at,
@@ -29,8 +32,8 @@ end
 
 function Storage:update_line_notes(line_notes)
   local path = vim.fn.expand('%:p')
-  self.data[path][tostring(vim.fn.line('.'))] = line_notes
-  if vim.tbl_isempty(self.data[path]) then
+  self.data[path][tostring(vim.fn.line('.'))].notes = line_notes
+  if not line_notes then
     self.data[path] = nil
   end
   self:write()
@@ -53,7 +56,14 @@ end
 function Storage:get_current_line_notes()
   local current_path = vim.fn.expand('%:p')
   local line = vim.fn.line('.')
-  return self:get({current_path, line})
+  return self:get({current_path, line, 'notes'})
+end
+
+function Storage:update_note_line(path, old_line, new_line)
+  local notes = self:get({path, old_line}, {})
+  if vim.tbl_isempty(notes) then return end
+  self.data[path][tostring(new_line)] = notes
+  self.data[path][tostring(old_line)] = nil
 end
 
 function Storage:read()

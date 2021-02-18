@@ -44,5 +44,8 @@ M.do_mapping = function(name, from_mapping)
   end
 end
 
+M.check_for_changes = function()
+  return M.setup():check_for_changes()
+end
 
 return M
