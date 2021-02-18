@@ -28,7 +28,11 @@ function Storage:add(entry)
 end
 
 function Storage:update_line_notes(line_notes)
-  self.data[vim.fn.expand('%:p')][tostring(vim.fn.line('.'))] = line_notes
+  local path = vim.fn.expand('%:p')
+  self.data[path][tostring(vim.fn.line('.'))] = line_notes
+  if vim.tbl_isempty(self.data[path]) then
+    self.data[path] = nil
+  end
   self:write()
   return self
 end
