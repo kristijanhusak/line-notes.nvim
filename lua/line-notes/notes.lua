@@ -24,7 +24,6 @@ function Notes:new(opts)
   self.storage = Storage:new(opts):read()
   obj:setup_autocmds()
   obj:setup_mappings()
-  obj:check_for_changes()
   return obj
 end
 
@@ -77,7 +76,7 @@ function Notes:add()
   self.storage:add({
     path = vim.fn.expand('%:p'),
     line = vim.fn.line('.'),
-    line_content = vim.fn.getline('.'),
+    line_content = vim.fn.trim(vim.fn.getline('.')),
     col = vim.fn.col('.'),
     note = note,
     created_at = os.time(os.date("!*t")),
@@ -213,10 +212,10 @@ function Notes:check_for_changes()
   if not file_notes or vim.tbl_isempty(file_notes) then return end
   local has_changes = false
   for line, entry in pairs(file_notes) do
-    local new_content = vim.fn.getline(tonumber(line))
+    local new_content = vim.fn.trim(vim.fn.getline(tonumber(line)))
     if new_content ~= entry.line_content then
       for linenr, line_content in ipairs(file_content) do
-        if line_content == entry.line_content then
+        if vim.fn.trim(line_content) == entry.line_content then
           has_changes = true
           self.storage:update_note_line(path, line, linenr)
           break
