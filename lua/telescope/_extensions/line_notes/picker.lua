@@ -23,7 +23,7 @@ local run = function(results)
           display = name,
           preview_command = function(en, bufnr)
             local content = {}
-            for i, note in ipairs(en.value.notes) do
+            for i, note in ipairs(en.value.notes.notes) do
               table.insert(content, string.format('%d. %s', i, note.note))
             end
             vim.api.nvim_buf_set_option(bufnr, 'filetype', 'markdown')
@@ -34,7 +34,7 @@ local run = function(results)
     },
     sorter = sorters.get_generic_fuzzy_sorter(),
     attach_mappings = function(prompt_bufnr)
-      actions._goto_file_selection:enhance({
+      actions.select_default:enhance({
           post = function()
             local selection = actions.get_selected_entry(prompt_bufnr)
             vim.api.nvim_win_set_cursor(0, { selection.value.line, 0 })
