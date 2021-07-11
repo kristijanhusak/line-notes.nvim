@@ -13,8 +13,8 @@ M.setup = function(opts)
   return instance
 end
 
-M.render = vim.schedule_wrap(function()
-  return M.setup():render()
+M.render = vim.schedule_wrap(function(skip_reopen)
+  return M.setup():render(skip_reopen)
 end)
 
 M.preview = vim.schedule_wrap(function()

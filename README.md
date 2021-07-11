@@ -30,7 +30,7 @@ Plug 'kristijanhusak/line-notes.nvim'
 " These are the default options
 lua require'line-notes'.setup({
 	path = vim.fn.stdpath('data')..'/line-notes.json', -- path where to save the file
-	border_chars = { top_left = '╭', top_mid = '─', top_right = '╮', mid = '│', bottom_left = '╰', bottom_right= '╯' },
+	border_style = 'rounded', // see :help nvim_open_win for more options
 	preview_max_width = 80, -- maximum width of preview notes float window
 	auto_preview = false -- automatically open preview notes float window
 	icon = '',

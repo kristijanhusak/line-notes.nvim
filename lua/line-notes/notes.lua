@@ -1,9 +1,6 @@
 local Storage = require'line-notes/storage'
 local Popup = require'line-notes/popup'
 local Notes = {}
-local borders = {
-  top_left = '╭', top_mid = '─', top_right = '╮', mid = '│', bottom_left = '╰', bottom_right= '╯',
-}
 local default_mappings = {
   add = '<leader>lna',
   edit = '<leader>lne',
@@ -15,7 +12,7 @@ function Notes:new(opts)
   local obj = {}
   obj.opts = opts or {}
   obj.opts.icon = obj.opts.icon or ''
-  obj.opts.border_chars = obj.opts.border_chars or borders
+  obj.opts.border_style = obj.opts.border_style or 'rounded'
   obj.opts.preview_max_width = obj.opts.preview_max_width or 80
   obj.opts.auto_preview = obj.opts.auto_preview or false
   obj.opts.mappings = obj.opts.mappings ~= nil and obj.opts.mappings or default_mappings
@@ -30,7 +27,7 @@ end
 function Notes:setup_autocmds()
   vim.cmd[[augroup line_notes]]
   vim.cmd[[autocmd!]]
-  vim.cmd[[autocmd BufEnter * lua require'line-notes'.render()]]
+  vim.cmd[[autocmd BufEnter * lua require'line-notes'.render(true)]]
   if self.opts.auto_preview then
     vim.cmd[[autocmd CursorHold * lua require'line-notes'.preview()]]
   end
@@ -151,14 +148,14 @@ function Notes:delete()
   return self:render()
 end
 
-function Notes:render()
+function Notes:render(skip_reopen)
   local current_path = vim.fn.expand('%:p')
   local buf = vim.api.nvim_get_current_buf()
   local file_notes = self.storage:get(current_path)
   if vim.b.line_notes_ns then
     vim.api.nvim_buf_clear_namespace(buf, vim.b.line_notes_ns, vim.fn.line('.') - 1, vim.fn.line('.'))
   end
-  if vim.tbl_isempty(file_notes) then return end
+  if vim.tbl_isempty(file_notes) then return Popup.close() end
 
   if not vim.b.line_notes_ns then
     vim.b.line_notes_ns = vim.api.nvim_create_namespace(string.format('line_notes_%s', current_path));
@@ -167,7 +164,7 @@ function Notes:render()
     local c = #notes_by_line.notes > 1 and #notes_by_line.notes or ''
     vim.api.nvim_buf_set_virtual_text(buf, vim.b.line_notes_ns, tonumber(line) - 1, {{string.format('  %s  ', self.opts.icon)..c, 'Comment'}}, {})
   end
-  if Popup.is_opened() then
+  if not skip_reopen and Popup.is_opened() then
     Popup.close()
     self:preview()
   end
@@ -176,7 +173,7 @@ end
 
 function Notes:preview()
   local line_notes = self.storage:get_current_line_notes()
-  if vim.tbl_isempty(line_notes) then return end
+  if vim.tbl_isempty(line_notes) then return Popup.close() end
 
   local float_content = {}
   for idx, item in ipairs(line_notes) do
